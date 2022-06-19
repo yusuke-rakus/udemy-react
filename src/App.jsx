@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import todo from "./components/todo";
+import AddArea from "./components/addArea";
+import IncompleteTodos from "./components/incompleteTodos";
+import CompleteTodos from "./components/completeTodos";
 
 const App = () => {
   const [todoText, setTodoText] = useState("");
@@ -43,7 +45,7 @@ const App = () => {
 
   // 戻すボタン押下処理
   const backButton = (i) => {
-    // 完了のToDoから削除する処理
+    // 完了のToDoから削除するp処理
     const completeList = [...completeTodos];
     completeList.splice(i, 1);
     setCompleteTodos(completeList);
@@ -53,41 +55,28 @@ const App = () => {
     setIncompleteTodos(incompleteList);
   };
 
+  // ここからJSX
   return (
     <>
-      <div id="addArea">
-        <input type="text" value={todoText} onChange={onChangeTodoText} />
-        <button onClick={addIncompleteButton}>追加</button>
-      </div>
+      {/* 入力エリア */}
+      <AddArea
+        // 関数と値を渡せる(スコープの関係上、関数の定義は上位階層でする必要あり)
+        todoText={todoText}
+        onChange={onChangeTodoText}
+        addIncomplete={addIncompleteButton}
+      />
       <hr />
-      <div id="todoArea">
-        <p>未完了のToDo</p>
-        <ul>
-          {incompleteTodos.map((todo, index) => {
-            return (
-              <li key={todo}>
-                <p>{todo}</p>
-                <button onClick={() => completeButton(index)}>完了</button>
-                <button onClick={() => deleteButton(index)}>削除</button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+
+      {/* 未完了エリア */}
+      <IncompleteTodos
+        incompleteTodos={incompleteTodos}
+        completeButton={completeButton}
+        deleteButton={deleteButton}
+      />
+
       <hr />
-      <div id="doneArea">
-        <p>完了のToDo</p>
-        <ul>
-          {completeTodos.map((done, index) => {
-            return (
-              <li key={done}>
-                <p>{done}</p>
-                <button onClick={() => backButton(index)}>戻す</button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {/* 完了エリア */}
+      <CompleteTodos completeTodos={completeTodos} backButton={backButton} />
     </>
   );
 };
